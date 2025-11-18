@@ -13,11 +13,8 @@ public class BaseTest {
 
     @BeforeEach
     public void setUp() {
-        // Для Chrome
         driver = new ChromeDriver();
 
-        // Для Firefox (раскомментировать если нужно)
-        // driver = new FirefoxDriver();
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();

@@ -13,7 +13,6 @@ import java.util.List;
 public class OrderPage {
     private final WebDriver driver;
 
-    // Поля формы заказа
     private final By nameField = By.xpath(".//input[@placeholder='* Имя']");
     private final By surnameField = By.xpath(".//input[@placeholder='* Фамилия']");
     private final By addressField = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
@@ -21,11 +20,9 @@ public class OrderPage {
     private final By phoneField = By.xpath(".//input[@placeholder='* Телефон: на него позвонит курьер']");
     private final By nextButton = By.xpath(".//button[text()='Далее']");
 
-    // Элементы для выбора станции метро
     private final By metroDropdown = By.className("select-search__options");
     private final By metroOption = By.xpath(".//div[@class='select-search__option']");
 
-    // Поля второй страницы заказа
     private final By dateField = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
     private final By rentalPeriodField = By.className("Dropdown-placeholder");
     private final By rentalPeriodOptions = By.xpath(".//div[@class='Dropdown-option']");
@@ -34,18 +31,15 @@ public class OrderPage {
     private final By commentField = By.xpath(".//input[@placeholder='Комментарий для курьера']");
     private final By orderButton = By.xpath(".//button[text()='Заказать' and contains(@class, 'Button_Middle')]");
 
-    // Элементы модального окна подтверждения заказа
     private final By confirmOrderModal = By.className("Order_Modal__YZ-d3");
     private final By confirmOrderButton = By.xpath(".//button[text()='Да']");
     private final By cancelOrderButton = By.xpath(".//button[text()='Нет']");
     private final By orderConfirmationText = By.xpath(".//div[contains(text(), 'Хотите оформить заказ?')]");
 
-    // Элементы успешного оформления заказа
     private final By successModal = By.className("Order_Modal__YZ-d3");
     private final By successMessage = By.xpath(".//div[contains(@class, 'Order_ModalHeader')]");
     private final By successOrderText = By.xpath(".//div[contains(text(), 'Заказ оформлен')]");
 
-    // Элементы ошибок валидации
     private final By validationError = By.xpath(".//div[contains(@class, 'Input_ErrorMessage')]");
 
     public OrderPage(WebDriver driver) {
@@ -55,21 +49,17 @@ public class OrderPage {
     public void fillFirstPage(String name, String surname, String address, String metro, String phone) {
         System.out.println("Заполняем первую страницу заказа...");
 
-        // Заполняем основные поля
         driver.findElement(nameField).sendKeys(name);
         driver.findElement(surnameField).sendKeys(surname);
         driver.findElement(addressField).sendKeys(address);
 
-        // Заполняем станцию метро с выбором из выпадающего списка
         fillMetroStation(metro);
 
-        // Заполняем телефон
         driver.findElement(phoneField).sendKeys(phone);
 
         System.out.println("Нажимаем кнопку 'Далее'...");
         driver.findElement(nextButton).click();
 
-        // Ждем загрузки второй страницы
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.visibilityOfElementLocated(dateField));
         System.out.println("Вторая страница загружена");
@@ -80,25 +70,20 @@ public class OrderPage {
 
         WebElement metroInput = driver.findElement(metroField);
 
-        // Кликаем на поле
         metroInput.click();
 
-        // Очищаем поле и вводим текст
         metroInput.clear();
         metroInput.sendKeys(metroStation);
 
-        // Ждем появления выпадающего списка
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.visibilityOfElementLocated(metroDropdown));
 
-        // Простой и надежный способ: кликаем на первую станцию в списке
         List<WebElement> options = driver.findElements(metroOption);
         if (!options.isEmpty()) {
             options.get(0).click();
             System.out.println("Станция метро выбрана");
         } else {
             System.out.println("Станции метро не найдены, используем стрелки");
-            // Альтернатива: если не сработал клик, используем стрелки
             metroInput.sendKeys(Keys.ARROW_DOWN);
             try {
                 Thread.sleep(500);
@@ -112,14 +97,12 @@ public class OrderPage {
     public void fillSecondPage(String date, String period, String color, String comment) {
         System.out.println("Заполняем вторую страницу заказа...");
 
-        // Заполняем дату
         WebElement dateInput = driver.findElement(dateField);
         dateInput.clear();
         dateInput.sendKeys(date);
         dateInput.sendKeys(Keys.ENTER);
         System.out.println("Дата заполнена: " + date);
 
-        // Выбираем период аренды
         driver.findElement(rentalPeriodField).click();
         new WebDriverWait(driver, Duration.ofSeconds(3))
                 .until(ExpectedConditions.visibilityOfElementLocated(rentalPeriodOptions));
@@ -128,7 +111,6 @@ public class OrderPage {
         periodOption.click();
         System.out.println("Период аренды выбран: " + period);
 
-        // Выбираем цвет
         if ("black".equals(color)) {
             driver.findElement(colorBlack).click();
             System.out.println("Цвет выбран: черный");
@@ -137,13 +119,11 @@ public class OrderPage {
             System.out.println("Цвет выбран: серый");
         }
 
-        // Заполняем комментарий
         if (comment != null && !comment.isEmpty()) {
             driver.findElement(commentField).sendKeys(comment);
             System.out.println("Комментарий заполнен: " + comment);
         }
 
-        // Прокручиваем к кнопке и кликаем
         WebElement orderBtn = driver.findElement(orderButton);
         ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", orderBtn);
 
@@ -153,7 +133,6 @@ public class OrderPage {
         System.out.println("Нажимаем кнопку 'Заказать'...");
         orderBtn.click();
 
-        // Ждем появления модального окна подтверждения "Хотите оформить заказ?"
         try {
             new WebDriverWait(driver, Duration.ofSeconds(5))
                     .until(ExpectedConditions.visibilityOfElementLocated(confirmOrderModal));
@@ -164,7 +143,6 @@ public class OrderPage {
         }
     }
 
-    // Метод: Проверка отображения модального окна подтверждения
     public boolean isConfirmationModalDisplayed() {
         try {
             new WebDriverWait(driver, Duration.ofSeconds(5))
@@ -175,29 +153,23 @@ public class OrderPage {
         }
     }
 
-    // УЛУЧШЕННЫЙ МЕТОД: Подтверждение заказа
     public void confirmOrder() {
         System.out.println("Подтверждаем заказ в диалоговом окне...");
 
-        // Получаем текущее состояние перед кликом
         String initialText = getModalText();
         System.out.println("Текст модального окна до клика: " + initialText);
 
         try {
-            // Пробуем разные стратегии клика
             WebElement yesButton = driver.findElement(confirmOrderButton);
 
-            // Стратегия 1: Обычный клик
             System.out.println("Пробуем обычный клик...");
             yesButton.click();
 
-            // Ждем изменения
             waitForModalChange(initialText);
 
         } catch (Exception e) {
             System.out.println("Обычный клик не сработал: " + e.getMessage());
 
-            // Стратегия 2: JavaScript клик
             try {
                 WebElement yesButton = driver.findElement(confirmOrderButton);
                 System.out.println("Пробуем JavaScript клик...");
@@ -206,7 +178,6 @@ public class OrderPage {
             } catch (Exception ex) {
                 System.out.println("JavaScript клик также не сработал: " + ex.getMessage());
 
-                // Стратегия 3: Actions клик
                 try {
                     WebElement yesButton = driver.findElement(confirmOrderButton);
                     System.out.println("Пробуем Actions клик...");
@@ -221,12 +192,10 @@ public class OrderPage {
             }
         }
 
-        // Проверяем результат
         String finalText = getModalText();
         System.out.println("Текст модального окна после клика: " + finalText);
     }
 
-    // Вспомогательный метод: Получить текст модального окна
     private String getModalText() {
         try {
             WebElement modalHeader = driver.findElement(successMessage);
@@ -236,7 +205,6 @@ public class OrderPage {
         }
     }
 
-    // Вспомогательный метод: Ждать изменения модального окна
     private void waitForModalChange(String initialText) {
         try {
             new WebDriverWait(driver, Duration.ofSeconds(5))
@@ -250,21 +218,17 @@ public class OrderPage {
         }
     }
 
-    // УЛУЧШЕННЫЙ МЕТОД: Проверка успешного оформления заказа
     public boolean isOrderSuccess() {
         System.out.println("Проверяем успешность заказа...");
 
-        // Получаем текущий текст модального окна
         String currentText = getModalText();
         System.out.println("Текущий текст модального окна: " + currentText);
 
-        // Если текст все еще "Хотите оформить заказ?", значит клик не сработал
         if (currentText.contains("Хотите оформить заказ")) {
             System.out.println("Клик на 'Да' не сработал - модальное окно не изменилось");
             return false;
         }
 
-        // Проверяем различные признаки успешного заказа
         if (currentText.contains("Заказ оформлен") ||
                 currentText.contains("оформлен") ||
                 currentText.contains("номер заказа") ||
@@ -273,7 +237,6 @@ public class OrderPage {
             return true;
         }
 
-        // Дополнительная проверка: ищем номер заказа в других элементах
         try {
             List<WebElement> modalElements = driver.findElements(By.xpath(".//div[contains(@class, 'Order_Modal')]//div"));
             for (WebElement element : modalElements) {
@@ -291,7 +254,6 @@ public class OrderPage {
         return false;
     }
 
-    // Методы для тестирования валидации
     public void clickNextButton() {
         driver.findElement(nextButton).click();
     }
@@ -314,42 +276,34 @@ public class OrderPage {
         driver.findElement(nameField).sendKeys(name);
     }
 
-    // ПРОСТОЙ И НАДЕЖНЫЙ МЕТОД: Клик на кнопку "Да"
     public void forceClickYesButton() {
         System.out.println("Принудительный клик на кнопку 'Да'...");
 
-        // Получаем текущий текст для отслеживания изменений
         String beforeClick = getModalText();
         System.out.println("До клика: " + beforeClick);
 
         try {
             WebElement yesButton = driver.findElement(confirmOrderButton);
 
-            // Делаем кнопку видимой и кликабельной
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", yesButton);
 
-            // Ждем немного
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
 
-            // Пробуем последовательно разные методы клика
             System.out.println("Пробуем последовательные клики...");
 
-            // 1. JavaScript клик
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", yesButton);
             System.out.println("JavaScript клик выполнен");
 
-            // Ждем
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
 
-            // Проверяем изменение
             String afterClick1 = getModalText();
             System.out.println("После JavaScript клика: " + afterClick1);
 
@@ -358,18 +312,15 @@ public class OrderPage {
                 return;
             }
 
-            // 2. Обычный клик
             yesButton.click();
             System.out.println("Обычный клик выполнен");
 
-            // Ждем
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
 
-            // Проверяем изменение
             String afterClick2 = getModalText();
             System.out.println("После обычного клика: " + afterClick2);
 

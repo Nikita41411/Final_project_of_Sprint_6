@@ -31,10 +31,8 @@ public class AdditionalTests {
     public void testFormValidationErrors() {
         System.out.println("=== ТЕСТ ВАЛИДАЦИИ ФОРМЫ ===");
 
-        // Переходим на страницу заказа
         mainPage.clickOrderButtonTop();
 
-        // Очищаем поле имени и пытаемся перейти дальше
         orderPage.clearNameField();
         orderPage.clickNextButton();
 
@@ -49,26 +47,22 @@ public class AdditionalTests {
     public void testCompleteOrderWithConfirmation() {
         System.out.println("=== ТЕСТ ПОЛНОГО ЗАКАЗА С ПОДТВЕРЖДЕНИЕМ ===");
 
-        // Данные для заказа
-        String name = "Пися";
+        String name = "Лися";
         String surname = "Камушкин";
         String address = "ул. Лунтика, д. 10";
         String metro = "Лубянка";
-        String phone = "+79998887766";
+        String phone = "+79008887766";
         String date = "29.11.2025";
         String period = "трое суток";
         String color = "black";
         String comment = "Позвонить за час";
 
-        // Заполняем заказ
         mainPage.clickOrderButtonTop();
         orderPage.fillFirstPage(name, surname, address, metro, phone);
         orderPage.fillSecondPage(date, period, color, comment);
 
-        // Подтверждаем заказ (нажимаем "Да" в диалоге)
         orderPage.confirmOrder();
 
-        // Проверяем, что заказ успешно оформлен
         boolean isSuccess = orderPage.isOrderSuccess();
         System.out.println("Заказ успешно оформлен: " + isSuccess);
 

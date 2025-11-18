@@ -61,21 +61,16 @@ public class OrderTest {
     private void completeOrder(String name, String surname, String address, String metro,
                                String phone, String date, String period, String color, String comment) {
         try {
-            // Заполняем первую страницу
             orderPage.fillFirstPage(name, surname, address, metro, phone);
 
-            // Заполняем вторую страницу и нажимаем "Заказать"
             orderPage.fillSecondPage(date, period, color, comment);
 
-            // ПРОВЕРЯЕМ, ЧТО ПОЯВИЛОСЬ ОКНО "Хотите оформить заказ?"
             boolean isConfirmationModalDisplayed = orderPage.isConfirmationModalDisplayed();
             System.out.println("Окно подтверждения 'Хотите оформить заказ?' отображается: " + isConfirmationModalDisplayed);
             assertTrue(isConfirmationModalDisplayed, "Окно подтверждения заказа не отображается");
 
-            // НАЖИМАЕМ "ДА" В ДИАЛОГЕ ПОДТВЕРЖДЕНИЯ С ТОЧНЫМ XPATH
             orderPage.confirmOrder();
 
-            // ПРОВЕРЯЕМ, ЧТО ЗАКАЗ УСПЕШНО ОФОРМЛЕН
             boolean isSuccess = orderPage.isOrderSuccess();
             System.out.println("Результат заказа: " + (isSuccess ? "УСПЕХ" : "НЕУДАЧА"));
 
@@ -91,14 +86,11 @@ public class OrderTest {
     public void testFormValidationErrors() {
         System.out.println("=== ТЕСТ ВАЛИДАЦИИ ФОРМЫ ===");
 
-        // Переходим на страницу заказа
         mainPage.clickOrderButtonTop();
 
-        // Очищаем поле имени и пытаемся перейти дальше
         orderPage.clearNameField();
         orderPage.clickNextButton();
 
-        // Проверяем, что ошибка валидации отображается
         boolean isErrorDisplayed = orderPage.isValidationErrorDisplayed();
         System.out.println("Ошибка валидации отображается: " + isErrorDisplayed);
 
