@@ -64,9 +64,10 @@ public class MainPage {
         ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", question);
 
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            new WebDriverWait(driver, Duration.ofSeconds(1))
+                    .until(ExpectedConditions.visibilityOfElementLocated(answerText(index)));
+        } catch (Exception e) {
+            // Игнорируем, если ответ не появился сразу
         }
     }
 

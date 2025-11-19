@@ -1,47 +1,40 @@
 package tests;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import pages.MainPage;
 
-import java.time.Duration;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FAQTest {
-    private WebDriver driver;
+public class FAQTest extends BaseTest {
     private MainPage mainPage;
 
+    @Override
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        super.setUp();
         mainPage = new MainPage(driver);
     }
 
-    @Test
-    public void testFAQSection() {
-        String[] expectedAnswers = {
-                "Сутки — 400 рублей. Оплата курьеру — наличными или картой.",
-                "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.",
-                "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."
-        };
-
-        for (int i = 0; i < 3; i++) {
-            mainPage.clickQuestion(i);
-            String answer = mainPage.getAnswerText(i);
-            assertFalse(answer.isEmpty(), "Ответ на вопрос " + i + " не отображается");
-            assertTrue(answer.contains(expectedAnswers[i]), "Неверный ответ на вопрос " + i);
-        }
+    static Stream<Arguments> faqDataProvider() {
+        return Stream.of(
+                Arguments.of(0, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."),
+                Arguments.of(1, "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."),
+                Arguments.of(2, "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30.")
+        );
     }
 
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
+    @ParameterizedTest
+    @MethodSource("faqDataProvider")
+    public void testFAQSection(int questionIndex, String expectedAnswer) {
+        mainPage.clickQuestion(questionIndex);
+        String answer = mainPage.getAnswerText(questionIndex);
+        assertFalse(answer.isEmpty(), "Ответ на вопрос " + questionIndex + " не отображается");
+        assertTrue(answer.contains(expectedAnswer), "Неверный ответ на вопрос " + questionIndex);
     }
 }

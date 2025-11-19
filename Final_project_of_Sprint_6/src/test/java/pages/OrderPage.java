@@ -85,11 +85,8 @@ public class OrderPage {
         } else {
             System.out.println("Станции метро не найдены, используем стрелки");
             metroInput.sendKeys(Keys.ARROW_DOWN);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            new WebDriverWait(driver, Duration.ofSeconds(1))
+                    .until(ExpectedConditions.elementToBeClickable(metroInput));
             metroInput.sendKeys(Keys.ENTER);
         }
     }
@@ -287,22 +284,19 @@ public class OrderPage {
 
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", yesButton);
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            new WebDriverWait(driver, Duration.ofSeconds(1))
+                    .until(ExpectedConditions.elementToBeClickable(yesButton));
 
             System.out.println("Пробуем последовательные клики...");
 
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", yesButton);
             System.out.println("JavaScript клик выполнен");
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            new WebDriverWait(driver, Duration.ofSeconds(3))
+                    .until(driver -> {
+                        String currentText = getModalText();
+                        return !currentText.equals(beforeClick);
+                    });
 
             String afterClick1 = getModalText();
             System.out.println("После JavaScript клика: " + afterClick1);
@@ -315,11 +309,11 @@ public class OrderPage {
             yesButton.click();
             System.out.println("Обычный клик выполнен");
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            new WebDriverWait(driver, Duration.ofSeconds(3))
+                    .until(driver -> {
+                        String currentText = getModalText();
+                        return !currentText.equals(afterClick1);
+                    });
 
             String afterClick2 = getModalText();
             System.out.println("После обычного клика: " + afterClick2);

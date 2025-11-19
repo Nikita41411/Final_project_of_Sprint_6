@@ -10,6 +10,7 @@ import java.time.Duration;
 
 public class BaseTest {
     protected WebDriver driver;
+    protected final String BASE_URL = "https://qa-scooter.praktikum-services.ru/";
 
     @BeforeEach
     public void setUp() {
@@ -18,7 +19,7 @@ public class BaseTest {
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        driver.get(BASE_URL);
     }
 
     @AfterEach

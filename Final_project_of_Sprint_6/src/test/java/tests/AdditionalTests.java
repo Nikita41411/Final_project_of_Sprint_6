@@ -1,28 +1,20 @@
 package tests;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import pages.MainPage;
 import pages.OrderPage;
 
-import java.time.Duration;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AdditionalTests {
-    private WebDriver driver;
+public class AdditionalTests extends BaseTest {
     private MainPage mainPage;
     private OrderPage orderPage;
 
+    @Override
     @BeforeEach
     public void setUp() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        super.setUp();
         mainPage = new MainPage(driver);
         orderPage = new OrderPage(driver);
     }
@@ -67,12 +59,5 @@ public class AdditionalTests {
         System.out.println("Заказ успешно оформлен: " + isSuccess);
 
         assertTrue(isSuccess, "Сообщение 'Заказ оформлен' не появилось после подтверждения");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }
