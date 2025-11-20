@@ -10,7 +10,7 @@ import java.time.Duration;
 
 public class BaseTest {
     protected WebDriver driver;
-    static final String BASE_URL = "https://qa-scooter.praktikum-services.ru/";
+    protected static final String BASE_URL = "https://qa-scooter.praktikum-services.ru/";
 
     @BeforeEach
     public void setUp() {
